@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 namespace DeluxeParking
 {
     internal class ParkingSpot
-    {        
-        public float SpotCapsity { get; }
-        public float SpotUsed { get; }
+    {
+        public const float SpotCapcity = 1.0f;
+        public float SpotUsed { get; set; }
         public List<Vehicle> Vehicles { get; set; }
-        
+
+        public ParkingSpot(float spotUsed)
+        {
+            SpotUsed = spotUsed;
+            Vehicles = new List<Vehicle>();
+        }
+
         public void Occupied()
         {
             if (SpotUsed == 0f)
@@ -24,10 +30,10 @@ namespace DeluxeParking
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Ledig");
             }
-            else
+            else if (SpotUsed == 1.0f)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("Upptagen ");
+                Console.WriteLine("Upptagen ");
                 Console.ResetColor();
                 foreach (Vehicle v in Vehicles)
                 {
@@ -51,20 +57,26 @@ namespace DeluxeParking
     }
     internal class Parkinggarage
     {
-        internal static ParkingSpot[] parkingSpots = new ParkingSpot[15];
-        public static void ParkingSpaces()
+        internal static void CreateSpaces()
         {
-            int x = 1;
-            for (int i = 0; i < parkingSpots.Length; i++)
+            for (int i = 0; i < Program.parkingSpots.Length; i++)
             {
-                parkingSpots[i] = new ParkingSpot();
+                Program.parkingSpots[i] = new ParkingSpot(0f);
             }
-            foreach (ParkingSpot p in parkingSpots)
+        }
+
+        public static void ParkingStatus()
+        {
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Parkeringsstatus\n");
+            int x = 1;         
+            foreach (ParkingSpot p in Program.parkingSpots)
             {
-                Console.Write($"{(x):D2} "); p.Occupied();
+                Console.SetCursorPosition(0, x + 1);
+                Console.Write($"{(x):D2} "); 
+                p.Occupied();
                 x++;
             }
-        Console.ReadLine();
         }
     }
     internal class VehiclePark

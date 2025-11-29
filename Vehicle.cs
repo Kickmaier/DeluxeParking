@@ -22,21 +22,34 @@ namespace DeluxeParking
 
     internal class Motorcycle : Vehicle
     {
-        public Motorcycle(string licensePlate, string vehicleColor) : base(licensePlate, vehicleColor) { }
         public string Brand { get; set; }
+
+        public Motorcycle(string licensePlate, string vehicleColor, string brand) : base(licensePlate, vehicleColor) 
+        { 
+            Brand = brand;
+        }
+        
         public override float VehicleSize { get; } = 0.5f;
     }
     internal class Car : Vehicle
     {
-        public Car (string licensePlate, string vehicleColor) : base (licensePlate, vehicleColor) { }
-
         public bool Electric { get; set; }
+        public Car(string licensePlate, string vehicleColor, bool electric) : base(licensePlate, vehicleColor)
+        { 
+        Electric = electric;
+        }
+
+        
         public override float VehicleSize { get; } = 1.0f;
     }
     internal class Bus : Vehicle
     {
-        public Bus(string licensePlate, string vehicleColor) : base(licensePlate, vehicleColor) { }
         public int Passengers { get; set; }
+        public Bus(string licensePlate, string vehicleColor, int passengers ) : base(licensePlate, vehicleColor) 
+        { 
+            Passengers = passengers;
+        }
+        
         public override float VehicleSize { get; } = 2;
     }
 }
