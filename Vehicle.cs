@@ -11,12 +11,14 @@ namespace DeluxeParking
     {
         public string LicensePlate { get; set; }
         public string VehicleColor { get; set; }
+        public DateTime ParkedTime { get; private set; }
         public abstract float VehicleSize { get; }
 
-        protected Vehicle(string licensePlate, string vehicleColor)
+        protected Vehicle(string licensePlate, string vehicleColor, DateTime parkedTime)
         {
             LicensePlate = licensePlate;
             VehicleColor = vehicleColor;
+            ParkedTime = parkedTime;
         }
     }
 
@@ -24,7 +26,7 @@ namespace DeluxeParking
     {
         public string Brand { get; set; }
 
-        public Motorcycle(string licensePlate, string vehicleColor, string brand) : base(licensePlate, vehicleColor) 
+        public Motorcycle(string licensePlate, string vehicleColor, DateTime parkedTime, string brand) : base(licensePlate, vehicleColor, parkedTime) 
         { 
             Brand = brand;
         }
@@ -34,7 +36,7 @@ namespace DeluxeParking
     internal class Car : Vehicle
     {
         public bool Electric { get; set; }
-        public Car(string licensePlate, string vehicleColor, bool electric) : base(licensePlate, vehicleColor)
+        public Car(string licensePlate, string vehicleColor, DateTime parkedTime, bool electric) : base(licensePlate, vehicleColor, parkedTime)
         { 
         Electric = electric;
         }
@@ -45,11 +47,11 @@ namespace DeluxeParking
     internal class Bus : Vehicle
     {
         public int Passengers { get; set; }
-        public Bus(string licensePlate, string vehicleColor, int passengers ) : base(licensePlate, vehicleColor) 
+        public Bus(string licensePlate, string vehicleColor, DateTime parkedTime, int passengers ) : base(licensePlate, vehicleColor, parkedTime) 
         { 
             Passengers = passengers;
         }
         
-        public override float VehicleSize { get; } = 2;
+        public override float VehicleSize { get; } = 2.0f;
     }
 }

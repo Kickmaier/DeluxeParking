@@ -10,11 +10,13 @@ namespace DeluxeParking
     {
         internal static void ParkingMainMenu()
         {
-            Parkinggarage.CreateSpaces();
+            ParkingGarage.CreateSpaces();
 
             while (true)
             {
-                Parkinggarage.ParkingStatus();
+                ParkingGarage.ParkingStatus();
+                Console.WriteLine();
+                Console.WriteLine($"{Helpers.FreeSpotsCounter()}");
                 Console.WriteLine();
                 MenuHelpers.DrawMainMenue();
                 ConsoleKey key = Helpers.KeyLimiter();
