@@ -9,10 +9,10 @@ namespace DeluxeParking
 {
     abstract class Vehicle
     {
-        public string LicensePlate { get; set; }
-        public string VehicleColor { get; set; }
-        public DateTime ParkedTime { get; private set; }
-        public abstract float VehicleSize { get; }
+        internal string LicensePlate { get; private set; }
+        internal string VehicleColor { get; set; }
+        internal DateTime ParkedTime { get; private set; }
+        internal abstract float VehicleSize { get; }
 
         protected Vehicle(string licensePlate, string vehicleColor, DateTime parkedTime)
         {
@@ -21,37 +21,32 @@ namespace DeluxeParking
             ParkedTime = parkedTime;
         }
     }
-
     internal class Motorcycle : Vehicle
     {
-        public string Brand { get; set; }
+        internal string Brand { get; set; }
 
         public Motorcycle(string licensePlate, string vehicleColor, DateTime parkedTime, string brand) : base(licensePlate, vehicleColor, parkedTime) 
         { 
             Brand = brand;
-        }
-        
-        public override float VehicleSize { get; } = 0.5f;
+        } 
+        internal override float VehicleSize { get; } = 0.5f;
     }
     internal class Car : Vehicle
     {
-        public bool Electric { get; set; }
+        internal bool Electric { get; set; }
         public Car(string licensePlate, string vehicleColor, DateTime parkedTime, bool electric) : base(licensePlate, vehicleColor, parkedTime)
         { 
         Electric = electric;
-        }
-
-        
-        public override float VehicleSize { get; } = 1.0f;
+        }  
+        internal override float VehicleSize { get; } = 1.0f;
     }
     internal class Bus : Vehicle
     {
-        public int Passengers { get; set; }
+        internal int Passengers { get; set; }
         public Bus(string licensePlate, string vehicleColor, DateTime parkedTime, int passengers ) : base(licensePlate, vehicleColor, parkedTime) 
         { 
             Passengers = passengers;
         }
-        
-        public override float VehicleSize { get; } = 2.0f;
+        internal override float VehicleSize { get; } = 2.0f;
     }
 }

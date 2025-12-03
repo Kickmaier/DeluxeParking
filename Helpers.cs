@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace DeluxeParking
 {
     internal static class Helpers
     {
+        internal const decimal spotPrice = 1.5m;
         internal static ConsoleKey KeyLimiter()
         {
             while (true)
@@ -20,30 +22,6 @@ namespace DeluxeParking
                 }
             }
         }
-        internal static void ClearBottom()
-        {
-            int width = Console.WindowWidth;
-            string clear = new string(' ', width);
-            for (int i = Program.parkingSpots.Length + 8; i < Program.parkingSpots.Length + 23; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.WriteLine(clear);
-            }
-            Console.SetCursorPosition(0, Program.parkingSpots.Length + 8);
-        }
-        internal static void ClearTop()
-        {
-            int width = Console.WindowWidth;
-            string clear = new string(' ', width);
-            for (int i = 0;  i < Program.parkingSpots.Length +7; i++)
-            {
-                {
-                    Console.SetCursorPosition(0, i);
-                    Console.WriteLine(clear);
-                }
-            }
-        }
-
         internal static string FreeSpotsCounter()
         {
             int CarCount = 0;
@@ -69,10 +47,44 @@ namespace DeluxeParking
                     i++;
                 }
             }
-            return 
+            return
                 $"Just \n{(MotorcycleCount):D2} platser för MC eller" +
                 $"\n{(CarCount):D2} platser för bilar eller" +
                 $"\n{(busCount):D2} platser för bussar.";
-        }    
+        }
+        internal static void HotFix()
+        {
+            Console.Clear();
+            ParkingGarage.ParkingStatus();
+            Console.WriteLine();
+            Console.WriteLine($"{Helpers.FreeSpotsCounter()}");
+            Console.WriteLine();
+        }
+        internal static string PriceCalculator(DateTime d, decimal vPrice)
+        {
+            int time = (int)(DateTime.Now - d).TotalSeconds;
+            decimal price = time * vPrice;
+            string priceFormat = price.ToString("F2");
+            return priceFormat;
+        }
+        internal static Vehicle VehicleFinder(string licence)
+        {
+            for (int i = 0; i < Program.parkingSpots.Length; i++)
+            {
+                if (Program.parkingSpots[i].Vehicles.Count > 0)
+                {
+                    for (int j = Program.parkingSpots[i].Vehicles.Count - 1; j >= 0; j--)
+                    {
+
+                        Vehicle v = Program.parkingSpots[i].Vehicles[j];
+                        if (v.LicensePlate == licence)
+                        {
+                            return v; 
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

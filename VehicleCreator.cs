@@ -16,17 +16,16 @@ namespace DeluxeParking
             {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U',
              'V', 'X', 'Y', 'Z'
             };
-            string letters = "";
+            string plate = "";
             for (int i = 0; i < 3; i++)
             {
-                letters += plateLetters[rnd.Next(plateLetters.Length)];
+                plate += plateLetters[rnd.Next(plateLetters.Length)];
             }
-            string numbers = "";
             for (int i = 0; i < 3; i++)
             {
-                numbers += rnd.Next(0, 10);
+                plate += rnd.Next(0, 10);
             }
-            return $"{letters}{numbers}";
+            return plate;
         }
         internal static string VehiclePainter()
         {
@@ -71,9 +70,9 @@ namespace DeluxeParking
             string regPlate = PlateGenerator();
             string color = VehiclePainter();
             DateTime parkedTime = DateTime.Now;
-            int size = BusSize();
+            int passengers = BusSize();
 
-            return new Bus(regPlate, color, parkedTime, size);
+            return new Bus(regPlate, color, parkedTime, passengers);
         }
     }
 }

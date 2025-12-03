@@ -10,58 +10,61 @@ namespace DeluxeParking
 {
     internal class ParkingSpot
     {
-        public const float SpotCapacity = 1.0f;
-        public float SpotUsed { get; set; }
-        public List<Vehicle> Vehicles { get; set; }
+        internal const float SpotCapacity = 1.0f;
+        internal float SpotUsed { get; set; }
+        internal List<Vehicle> Vehicles { get; }
 
-        public ParkingSpot(float spotUsed)
+        internal ParkingSpot(float spotUsed)
         {
             SpotUsed = spotUsed;
             Vehicles = new List<Vehicle>();
         }
 
-        internal void Occupied()
-        {   
-            if (SpotUsed == 0f)
+        internal void Occupied(int spotNumber)
+        {
+            Console.Write($"{spotNumber:D2} ");
+
+            switch (SpotUsed)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Ledig");
+                case 0f:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("Ledig");
+                    break;
+                case 0.5f:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("Ledig ");
+                    Console.ResetColor();
+                    foreach (Vehicle v in Vehicles)
+                    {
+                        if (v is Motorcycle mc)
+                        {
+                            Console.Write($"MC {mc.LicensePlate} {mc.Brand} {mc.VehicleColor}");
+                        }
+                    }
+                    break;
+                case 1.0f:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Upptagen ");
+                    Console.ResetColor();
+                    foreach (Vehicle v in Vehicles)
+                    {
+                        if (v is Motorcycle m)
+                        {
+                            Console.Write($"MC {m.LicensePlate} {m.Brand} {m.VehicleColor} ");
+                        }
+                        else if (v is Car c)
+                        {
+                            string engineType = c.Electric ? "Elektisk" : "Förbränning";
+                            Console.Write($"Bil {c.LicensePlate} {engineType} {c.VehicleColor}");
+                        }
+                        else if (v is Bus b)
+                        {
+                            Console.Write($"Buss {b.LicensePlate} {b.Passengers} {b.VehicleColor}");
+                        }
+                    }
+                    break;
             }
-            else if (SpotUsed == 0.5f)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("Ledig ");
-                Console.ResetColor();
-                foreach (Vehicle v in Vehicles)
-                {
-                    if (v is Motorcycle mc)
-                    {
-                        Console.Write($"MC {mc.LicensePlate} {mc.Brand} {mc.VehicleColor}");
-                    }
-                }
-            }
-            else if (SpotUsed == 1.0f)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("Upptagen ");
-                Console.ResetColor();
-                foreach (Vehicle v in Vehicles)
-                {
-                    if (v is Motorcycle m)
-                    {
-                        Console.Write($"MC {m.LicensePlate} {m.Brand} {m.VehicleColor} ");
-                    }
-                    else if (v is Car c)
-                    {
-                        string engineType = c.Electric ? "Elektisk" : "Förbränning";
-                        Console.Write($"Bil {c.LicensePlate} {engineType} {c.VehicleColor}");
-                    }
-                    else if (v is Bus b)
-                    {
-                        Console.Write($"Buss {b.LicensePlate} {b.Passengers} {b.VehicleColor}");
-                    }
-                }
-            }
+            Console.WriteLine();
             Console.ResetColor();
         }
     }
@@ -74,18 +77,11 @@ namespace DeluxeParking
                 Program.parkingSpots[i] = new ParkingSpot(0f);
             }
         }
-
         internal static void ParkingStatus()
         {
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine("Parkeringsstatus\n");
-            int x = 1;         
-            foreach (ParkingSpot p in Program.parkingSpots)
+            for(int i = 0; i < Program.parkingSpots.Length; i++)
             {
-                Console.SetCursorPosition(0, x + 1);
-                Console.Write($"{(x):D2} "); 
-                p.Occupied();
-                x++;
+                Program.parkingSpots[i].Occupied(i + 1);
             }
         }
         internal static void ParkVehicle(Vehicle v)
@@ -116,12 +112,11 @@ namespace DeluxeParking
                         Console.WriteLine($"Fordon med regnr {c.LicensePlate} parkerat på plats {i + 1}");
                         return;
                     }
-
                 }
             }
             else if(v is Bus bus)
             {
-                for(int i = 0;i < spot.Length -1;i++)
+                for(int i = 0;i <= spot.Length -2;i++)
                 {
                     if (spot[i].SpotUsed == 0 && spot[i+1].SpotUsed == 0)
                     {
@@ -132,40 +127,49 @@ namespace DeluxeParking
                         Console.WriteLine($"Fordon med regnr {bus.LicensePlate} parkerat på plats {i + 1} och {i + 2}");
                         return;
                     }
-
                 }
             }
             Console.WriteLine("Fordonet får tyvärr inte plats på parkeringen");
         }
+
         internal static void Unpark(string licence)
         {
             for (int i = 0; i < Program.parkingSpots.Length; i++)
             {
                 if (Program.parkingSpots[i].Vehicles.Count > 0)
-                for (int j = 0; j < Program.parkingSpots[i].Vehicles.Count; j++)
                 {
-                       Vehicle v = Program.parkingSpots[i].Vehicles[j];
-                        if(v.LicensePlate == licence && v is not Bus)
-                        {
-                            Program.parkingSpots[i].SpotUsed -= v.VehicleSize;
-                            Program.parkingSpots[i].Vehicles.Remove(v);
-                            Console.Write(v.LicensePlate);
-                            Helpers.ClearTop();
-                            return; ;
-                        }
-                        else if (v.LicensePlate == licence && v is Bus)
-                        {
-                            Program.parkingSpots[i].SpotUsed -= v.VehicleSize / 2;
-                            Program.parkingSpots[i+1].SpotUsed -= v.VehicleSize / 2;
-                            Program.parkingSpots[i].Vehicles.Remove(v);
-                            Program.parkingSpots[i+1].Vehicles.Remove(v);
-                            Helpers.ClearTop();
-                            return;
-                        }
-                }
+                    for (int j = Program.parkingSpots[i].Vehicles.Count - 1; j >= 0; j--)
+                    {
 
-            }
-            Console.WriteLine("Kunde inte hitta fordonet");
+                        Vehicle v = Program.parkingSpots[i].Vehicles[j];
+                        if (v.LicensePlate == licence)
+                        {
+                            if (v is not Bus)
+                            {
+                                Program.parkingSpots[i].SpotUsed -= v.VehicleSize;
+                                Program.parkingSpots[i].Vehicles.Remove(v);
+                                decimal price = v is Car ? Helpers.spotPrice : Helpers.spotPrice / 2;
+                                Console.Write(v.LicensePlate + " Utcheckad\n Priset blir " + Helpers.PriceCalculator(v.ParkedTime, price) + ":-");
+                                return;
+                            }
+                            else if (v is Bus)
+                            {
+                                Program.parkingSpots[i].SpotUsed -= v.VehicleSize / 2;
+                                Program.parkingSpots[i + 1].SpotUsed -= v.VehicleSize / 2;
+                                Program.parkingSpots[i].Vehicles.Remove(v);
+                                Program.parkingSpots[i + 1].Vehicles.Remove(v);
+                                Console.Write(v.LicensePlate + " Utcheckad\n Priset blir " + Helpers.PriceCalculator(v.ParkedTime, Helpers.spotPrice * 2) + ":-");
+                                return;
+
+                            }
+
+                        }
+
+                    }
+                }
+               
+            } 
+            Console.WriteLine("Kunde inte hitta fordonet!");
         }
     }
 }
